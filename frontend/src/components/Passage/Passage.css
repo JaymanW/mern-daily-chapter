@@ -1,0 +1,14 @@
+#verse-cnt h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+  
+#verse-cnt h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+  
+#verse-cnt h3:nth-child(n+2) {
+    margin-top: 0.5rem;
+}

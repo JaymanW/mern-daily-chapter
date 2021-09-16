@@ -14,17 +14,68 @@ app.use(express.urlencoded({
 app.use(cors());
 const port = 8080;
 
-const setDaily = (result, book, chapter, date) => {
+// DB CONNECTION
+const MongoClient = require('mongodb').MongoClient;
+const uri = `mongodb+srv://JaymanW:${process.env.MONGO_PASSWORD}@cluster0.buicg.mongodb.net/dailyChapter?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, useUnifiedTopology: true, connectTimeoutMS: 30000, keepAlive: 1 });
+client.connect()
+
+// CONTROLLERS
+const getChapter = async (searchResult) => {
+  try {
+    const chapterDB = client.db("dailyChapter").collection("days");
+    const query = chapterDB.find({ date: searchResult }).sort({ _id: 1 }).limit(1);
+    const result = await query.toArray();
+    return result;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    
+  }
+}
+
+const getToday = async () => {
+  try {
+      let today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      const yyyy = today.getFullYear();
+      const date = `${mm}-${dd}-${yyyy}`;
+      
+      const chapterDB = client.db("dailyChapter").collection("days");
+      const query = chapterDB.find({ date: date }).sort({ _id: 1 }).limit(1);
+      const result = await query.toArray();
+      return result;
+  } catch (err) {
+      console.error(err);
+  } finally {
+      
+  }
+}
+
+// ROUTES
+app.get('/api/', async (req, res) => {
+    const result = await getToday();
+    res.send(result);
+})
+
+app.get('/api/:id', async (req, res) => {
+  const result = await getChapter(req.params.id);
+  res.send(result);
+})
+
+const setDaily = async (result, book, chapter, date) => {
     try {
-        console.log(result);
-        console.log(book);
-        console.log(chapter);
-        console.log(date);
+        const chapterDB = client.db("dailyChapter").collection("days");
+
+        await chapterDB.insertOne( { date: date, content: result, book: book, chapter: chapter, replies: {} } );
+        console.log(`Interted day successfully on ${date}`);
       } catch (err) {
         console.error(err);
       }
 }
 
+// DAILY API CALL THAT POPULATES DATABASE WITH NEXT DAY'S VERSE
 const daily = () => {
     const getPassage = () => {  
         const passages = [
@@ -66,8 +117,8 @@ const daily = () => {
 
     const passageInfo = getPassage();
     const passageQuery = `${passageInfo.book}${passageInfo.chapter}`;
-    
-    const token = '5152f5f13c1f1e7eea4b6199ba0383a515589315';
+
+    const token = process.env.API_TOKEN;
     
     axios(`https://api.esv.org/v3/passage/html/`, {
     method: "get",
@@ -84,18 +135,13 @@ const daily = () => {
 
         let today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
         const yyyy = today.getFullYear();
+        const date = `${mm}-${dd}-${yyyy}`;
 
-        // console.log(response.data.passages[0])
         const result = response.data.passages[0];
         const book = passageInfo.book;
         const chapter = passageInfo.chapter;
-        let date = {
-            year: yyyy,
-            month: mm,
-            day: dd
-        }
 
         setDaily(result, book, chapter, date);
     })
@@ -103,8 +149,9 @@ const daily = () => {
         console.log(error);
     })
 }
-daily();
+// daily();
 
+// FUNCTION THAT IS CALLED ONCE A DAY @ 1AM TO RUN DAILY FUNCTION
 const job = schedule.scheduleJob('* * * * *', function(){
     // 0/1 0 1 ? * * *          <- Once a day at 1am
     // daily();

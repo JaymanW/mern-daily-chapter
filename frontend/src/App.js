@@ -6,6 +6,7 @@ import moment from 'moment';
 import Header from './components/Header'
 import Selector from './components/Selector'
 import Passage from './components/Passage/index'
+import CommentCnt from './components/CommentCnt'
 
 function App() {
   const [offset, setOffset] = useState(0);
@@ -31,7 +32,7 @@ function App() {
       <Header />
       <Selector onBackOneDay={handleBackOneDay} onForwardOneDay={handleForwardOneDay} date={date} />
       <Passage date={date} />
-      {/* <Comments /> */}
+      <CommentCnt date={date} />
     </div>
   );
 }

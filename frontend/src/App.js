@@ -4,6 +4,7 @@ import './App.css';
 import moment from 'moment';
 
 import Header from './components/Header'
+import Selector from './components/Selector'
 import Passage from './components/Passage/index'
 
 function App() {
@@ -27,7 +28,8 @@ function App() {
   
   return (
     <div className="App">
-      <Header onBackOneDay={handleBackOneDay} onForwardOneDay={handleForwardOneDay} date={date} />
+      <Header />
+      <Selector onBackOneDay={handleBackOneDay} onForwardOneDay={handleForwardOneDay} date={date} />
       <Passage date={date} />
       {/* <Comments /> */}
     </div>

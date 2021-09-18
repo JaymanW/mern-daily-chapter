@@ -5,21 +5,6 @@ import './Passage.css'
 
 function Passage({ date }) {
     const [passage, setPassage] = useState()
-    
-    useEffect(() => {
-        axios.get('http://localhost:8080/api')
-            .then(function (response) {
-                // handle success
-                setPassage(response.data[0].content);
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
-    }, []);
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/${date}`)

@@ -1,7 +1,20 @@
 #verse-cnt h2 {
-    text-align: center;
+    /* text-align: left; */
     font-size: 1.5rem;
     font-weight: 700;
+    position: relative;
+    width: max-content;
+    margin-left: 20px;
+    /* margin: 0 auto; */
+}
+
+#verse-cnt h2::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    height: 35px;
+    width: 7px;
+    background: #0080FF;
 }
   
 #verse-cnt h3 {

@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const mongo = require('mongodb')
+
 const axios = require('axios');
 
 const schedule = require('node-schedule');
@@ -53,6 +55,63 @@ const getToday = async () => {
   }
 }
 
+// GET COMMENTS
+
+const getComments = async (date) => {
+  try {
+    const chapterDB = client.db("dailyChapter").collection("days");
+    const query = chapterDB.find({ date: date }).sort({ _id: 1 }).limit(1);
+    const result = await query.toArray();
+    return result[0].comments;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    
+  }
+}
+
+const addComment = async (date, username, comment) => {
+  try {
+    let temp = [];
+
+    for (let i = 0; i < 17; i++) {
+    let digit = Math.floor(Math.random() * 9 + 1);
+    temp.push(digit);
+    }
+    const ID = parseInt(temp.join(""));
+    
+    const chapterDB = client.db("dailyChapter").collection("days");
+      chapterDB.updateOne({ "date": date }, {
+        $push: {
+          "comments": {
+            _id: ID,
+            id: 1,
+            username: username,
+            comment: comment,
+          }
+        }
+      })
+  } catch (err) {
+      console.error(err);
+  } finally {
+      
+  }
+}
+
+// REMOVE COMMENT
+const deleteComment = async (date, commentID) => {
+  try {
+    const chapterDB = client.db("dailyChapter").collection("days");
+    chapterDB.updateOne({ "date": date }, {
+      $pull: { "comments": { id: 1} },
+    })
+  } catch (err) {
+    console.error(err);
+  } finally {
+      
+  }
+}
+
 // ROUTES
 app.get('/api/', async (req, res) => {
     const result = await getToday();
@@ -64,11 +123,29 @@ app.get('/api/:id', async (req, res) => {
   res.send(result);
 })
 
+// GET COMMENTS
+app.get('/api/comment/:id', async (req, res) => {
+  const result = await getComments(req.params.id);
+  res.send(result);
+})
+
+app.post('/api/comment/:id', async (req, res) => {
+  const { username, comment } = req.body;
+  addComment(req.params.id, username, comment);
+  res.status(201).json({ success: true });
+});
+
+// DELETE COMMENTS
+app.delete('/api/comment/:id', (req, res) => {
+  deleteComment(req.params.id, req.body.commentID);
+  res.status(201).json({ success: true });
+})
+
 const setDaily = async (result, book, chapter, date) => {
     try {
         const chapterDB = client.db("dailyChapter").collection("days");
 
-        await chapterDB.insertOne( { date: date, content: result, book: book, chapter: chapter, replies: {} } );
+        await chapterDB.insertOne( { date: date, content: result, book: book, chapter: chapter, comments: [] } );
         console.log(`Interted day successfully on ${date}`);
       } catch (err) {
         console.error(err);

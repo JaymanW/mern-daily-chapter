@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Username from './Username'
 import LoginBtn from './LoginBtn'
 import LogoutBtn from './LogoutBtn'

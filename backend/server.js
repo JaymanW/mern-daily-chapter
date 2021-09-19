@@ -1,13 +1,12 @@
+// IMPORTS
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
 const mongo = require('mongodb')
-
 const axios = require('axios');
-
 const schedule = require('node-schedule');
 
+// EXPRESS SETUP
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({
@@ -22,7 +21,7 @@ const uri = `mongodb+srv://JaymanW:${process.env.MONGO_PASSWORD}@cluster0.buicg.
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, useUnifiedTopology: true, connectTimeoutMS: 30000, keepAlive: 1 });
 client.connect()
 
-// CONTROLLERS
+// GETS CHAPTER FOR GIVEN DATE
 const getChapter = async (searchResult) => {
   try {
     const chapterDB = client.db("dailyChapter").collection("days");
@@ -31,11 +30,10 @@ const getChapter = async (searchResult) => {
     return result;
   } catch (err) {
     console.error(err);
-  } finally {
-    
   }
 }
 
+// GETS CHAPTER BASED ON CURRENT DAY
 const getToday = async () => {
   try {
       let today = new Date();
@@ -55,8 +53,7 @@ const getToday = async () => {
   }
 }
 
-// GET COMMENTS
-
+// GETS COMMENTS FOR A GIVEN DAY
 const getComments = async (date) => {
   try {
     const chapterDB = client.db("dailyChapter").collection("days");
@@ -70,6 +67,7 @@ const getComments = async (date) => {
   }
 }
 
+// CREATES COMMENT FOR A GIVEN DAY
 const addComment = async (date, username, comment) => {
   try {
     let temp = [];
@@ -97,7 +95,7 @@ const addComment = async (date, username, comment) => {
   }
 }
 
-// REMOVE COMMENT
+// REMOVES COMMENT FOR A GIVEN DAY
 const deleteComment = async (date, commentID) => {
   try {
     const chapterDB = client.db("dailyChapter").collection("days");
@@ -122,7 +120,6 @@ app.get('/api/:id', async (req, res) => {
   res.send(result);
 })
 
-// GET COMMENTS
 app.get('/api/comment/:id', async (req, res) => {
   const result = await getComments(req.params.id);
   res.send(result);
@@ -134,12 +131,12 @@ app.post('/api/comment/:id', async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-// DELETE COMMENTS
 app.delete('/api/comment/:id', (req, res) => {
   deleteComment(req.params.id, req.body.commentID);
   res.status(201).json({ success: true });
 })
 
+// DAILY DB INTERACTIONS
 const setDaily = async (result, book, chapter, date) => {
     try {
         const chapterDB = client.db("dailyChapter").collection("days");
@@ -225,7 +222,6 @@ const daily = () => {
         console.log(error);
     })
 }
-// daily();
 
 // FUNCTION THAT IS CALLED ONCE A DAY @ 1AM TO RUN DAILY FUNCTION
 const job = schedule.scheduleJob('* * * * *', function(){

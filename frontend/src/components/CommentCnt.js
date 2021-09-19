@@ -39,10 +39,6 @@ function CommentCnt({ date }) {
         setNewComment('');
         getComments();
     }
-
-    useEffect(() => {
-        console.log(newComment)
-    }, [newComment])
     
     return (
         <div className="container mx-auto max-w-4xl px-4 py-10">
@@ -61,9 +57,7 @@ function CommentCnt({ date }) {
                 :
                 <p className="mt-4">*Please log in to leave a comment.</p>
             }
-            {/* CNT FOR COMMENTS (MAKES API CALL TO BACKEND AND APPENDS COMMENTS TO ARRAY, THEN MAPS OVER ARRAY AND GENERATES COMMENTS) */}
             <div className="mt-8 space-y-4">
-                {/* <Comment username={} content={} /> */}
                 {
                 existingComments.length === 0 ?
                 null

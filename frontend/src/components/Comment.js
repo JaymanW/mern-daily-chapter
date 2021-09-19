@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios';
 
 function Comment({ username, comment, commentID, date, refresh }) {
     const [isReadyToTrash, setIsReadyToTrash] = useState(false);
     const { isAuthenticated, user } = useAuth0();
-
-    useEffect(() => {
-        console.log(isReadyToTrash)
-    }, [isReadyToTrash])
 
     const toggleTrashReady = () => {
         setIsReadyToTrash(isReadyToTrash => !isReadyToTrash)
@@ -20,7 +16,6 @@ function Comment({ username, comment, commentID, date, refresh }) {
                 commentID: commentID
             }    
         })
-        console.log(commentID)
         refresh();
     }
     

@@ -11,7 +11,7 @@ function Comment({ username, comment, commentID, date, refresh }) {
     }
 
     const deleteComment = async () => {
-        await axios.delete(`http://localhost:8080/api/comment/${date}`, {
+        await axios.delete(`https://daily-chapter-backend.herokuapp.com/api/comment/${date}`, {
             data: {
                 commentID: commentID
             }    

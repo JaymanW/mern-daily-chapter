@@ -5,7 +5,7 @@ function LogoutBtn() {
     const { logout } = useAuth0();
     
     return (
-        <button className="underline text-sm" onClick={() => logout({ returnTo: "http://localhost:3000/"})} >Log Out</button>
+        <button className="underline text-sm" onClick={() => logout({ returnTo: "https://dailychapter.xyz/"})} >Log Out</button>
     )
 }
 

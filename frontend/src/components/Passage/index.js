@@ -7,7 +7,7 @@ function Passage({ date }) {
     const [passage, setPassage] = useState()
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/${date}`)
+        axios.get(`https://daily-chapter-backend.herokuapp.com/api/${date}`)
             .then(function (response) {
                 // handle success
                 setPassage(response.data[0].content);

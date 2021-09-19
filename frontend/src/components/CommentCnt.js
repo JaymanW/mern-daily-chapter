@@ -19,7 +19,7 @@ function CommentCnt({ date }) {
     }, [date])
 
     const getComments = () => {
-        axios.get(`http://localhost:8080/api/comment/${date}`)
+        axios.get(`https://daily-chapter-backend.herokuapp.com/api/comment/${date}`)
         .then((response) => {
             setExistingComments(response.data);
         }).catch((err) => {
@@ -32,7 +32,7 @@ function CommentCnt({ date }) {
     }
 
     const handleSubmit = () => {
-        axios.post(`http://localhost:8080/api/comment/${date}`, {
+        axios.post(`https://daily-chapter-backend.herokuapp.com/api/comment/${date}`, {
             username: user.name,
             comment: newComment
         })

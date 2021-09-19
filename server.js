@@ -13,7 +13,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 app.use(cors());
-const port = 8080;
+const port = process.env.PORT || 8000;
 
 // DB CONNECTION
 const MongoClient = require('mongodb').MongoClient;

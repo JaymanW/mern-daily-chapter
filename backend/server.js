@@ -84,8 +84,7 @@ const addComment = async (date, username, comment) => {
       chapterDB.updateOne({ "date": date }, {
         $push: {
           "comments": {
-            _id: ID,
-            id: 1,
+            id: ID,
             username: username,
             comment: comment,
           }
@@ -103,7 +102,7 @@ const deleteComment = async (date, commentID) => {
   try {
     const chapterDB = client.db("dailyChapter").collection("days");
     chapterDB.updateOne({ "date": date }, {
-      $pull: { "comments": { id: 1} },
+      $pull: { "comments": { id: commentID} },
     })
   } catch (err) {
     console.error(err);
@@ -146,7 +145,7 @@ const setDaily = async (result, book, chapter, date) => {
         const chapterDB = client.db("dailyChapter").collection("days");
 
         await chapterDB.insertOne( { date: date, content: result, book: book, chapter: chapter, comments: [] } );
-        console.log(`Interted day successfully on ${date}`);
+        console.log(`Inserted day successfully on ${date}`);
       } catch (err) {
         console.error(err);
       }

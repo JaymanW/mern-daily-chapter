@@ -34,8 +34,10 @@ function CommentCnt({ date }) {
     const handleSubmit = () => {
         axios.post(`https://daily-chapter-backend.herokuapp.com/api/comment/${date}`, {
             username: user.name,
-            comment: newComment
+            comment: newComment,
+            profileImg: user.picture
         })
+        console.log(`Picture: ${user.picture}`)
         setNewComment('');
         getComments();
     }
@@ -63,7 +65,7 @@ function CommentCnt({ date }) {
                 null
                 :
                 existingComments.map(comment => {
-                    return <Comment key={comment.id} username={comment.username} comment={comment.comment} date={date} commentID={comment.id} refresh={getComments} />
+                    return <Comment key={comment.id} username={comment.username} comment={comment.comment} date={date} commentID={comment.id} profileImg={comment.profileImg} refresh={getComments} />
                 })
                 }
             </div>

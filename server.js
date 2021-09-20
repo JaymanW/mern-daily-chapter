@@ -224,7 +224,7 @@ const daily = () => {
 }
 
 // FUNCTION THAT IS CALLED ONCE A DAY @ 1AM TO RUN DAILY FUNCTION
-const job = schedule.scheduleJob('0 0 1/24 ? * * *', function(){
+const job = schedule.scheduleJob('0 1 * * *', function(){
     daily();
 });
 

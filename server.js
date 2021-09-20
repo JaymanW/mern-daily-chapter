@@ -68,7 +68,7 @@ const getComments = async (date) => {
 }
 
 // CREATES COMMENT FOR A GIVEN DAY
-const addComment = async (date, username, comment) => {
+const addComment = async (date, username, comment, profileImg) => {
   try {
     let temp = [];
 
@@ -85,6 +85,7 @@ const addComment = async (date, username, comment) => {
             id: ID,
             username: username,
             comment: comment,
+            profileImg: profileImg
           }
         }
       })
@@ -126,8 +127,8 @@ app.get('/api/comment/:id', async (req, res) => {
 })
 
 app.post('/api/comment/:id', async (req, res) => {
-  const { username, comment } = req.body;
-  addComment(req.params.id, username, comment);
+  const { username, comment, profileImg } = req.body;
+  addComment(req.params.id, username, comment, profileImg);
   res.status(201).json({ success: true });
 });
 
